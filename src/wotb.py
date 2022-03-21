@@ -40,7 +40,7 @@ def gettiobe(begin,end,*,ranking=True,rantings=True,change=True,foreward=False):
         return (rankinglist,forewarda)
     return (rankinglist,)
 
-def printtiobe(rankinglist,*,ranking,rantings,change):
+def printtiobe(rankinglist,*,ranking=True,rantings=True,change=True):
     if len(rankinglist)==2:
         print(rankinglist[1])
     if ranking:
@@ -51,7 +51,7 @@ def printtiobe(rankinglist,*,ranking,rantings,change):
     if change:
         print('change',end='\t')
     print('')
-    for name,details in rankinglist.items():
+    for name,details in rankinglist[0].items():
         print(name,end='\t')
         if ranking:
             print(details['ranking'],end='\t')
