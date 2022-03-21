@@ -40,13 +40,25 @@ def gettiobe(begin,end,*,ranking=True,rantings=True,change=True,foreward=False):
         return (rankinglist,forewarda)
     return (rankinglist,)
 
-def printtiobe(rankinglist):
-    for i,j in rankinglist[0].items():
-        print(i,end='\t')
-        for ji in j.values():
-            print(str(ji),end='\t')
-        print('',end='\n')
-    print(rankinglist[1])
-    
+def printtiobe(rankinglist,*,ranking,rantings,change):
+    if len(rankinglist)==2:
+        print(rankinglist[1])
+    if ranking:
+        print('ranking',end='\t')
+    print('name',end='\t')
+    if rantings:
+        print('rantings',end='\t')
+    if change:
+        print('change',end='\t')
+    print('')
+    for name,details in rankinglist.items():
+        print(name,end='\t')
+        if ranking:
+            print(details['ranking'],end='\t')
+        if rantings:
+            print(details['rantings'],end='\t')
+        if change and 'change' in details:
+            print(details['change'],end='\t')
+        print('')
 
 printtiobe(gettiobe(1,50,foreward=True))
