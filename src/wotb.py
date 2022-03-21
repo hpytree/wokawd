@@ -45,20 +45,26 @@ def printtiobe(rankinglist,*,ranking=True,rantings=True,change=True):
         print(rankinglist[1])
     if ranking:
         print('ranking',end='\t')
-    print('name',end='\t')
+    print('name',end='\t\t\t')
     if rantings:
         print('rantings',end='\t')
     if change:
         print('change',end='\t')
     print('')
     for name,details in rankinglist[0].items():
-        print(name,end='\t')
         if ranking:
             print(details['ranking'],end='\t')
+        if len(name) < 8:
+            end='\t\t\t'
+        elif len(name) < 16:
+            end='\t\t'
+        else:
+            end='\t'
+        print(name,end=end)
         if rantings:
-            print(details['rantings'],end='\t')
+            print(str(details['rantings'])+'%',end='\t\t')
         if change and 'change' in details:
-            print(details['change'],end='\t')
+            print(str(details['change'])+'%',end='\t')
         print('')
 
 printtiobe(gettiobe(1,50,foreward=True))
