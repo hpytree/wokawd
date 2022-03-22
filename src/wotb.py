@@ -28,8 +28,6 @@ article/table[2]/tbody/tr')
         alllist=onetotwenty+twentytofifty
         del onetotwenty
         del twentytofifty
-        if not (self.ranking and self.rantings and self.change):
-            return None
         for i in range(self.begin-1,self.end):
             td=alllist[i].xpath('td')
             if i < 20:
@@ -85,7 +83,7 @@ article/table[2]/tbody/tr')
             print('')
 
 if __name__=='__main__':
-    opts,args=getopt.getopt(sys.argv,\
+    opts,args=getopt.getopt(sys.argv[1:],\
         shortopts='-h-v-b:-e:-u-r-c-f',\
         longopts=['help','version','begin=','end=','unranking',\
         'rantings','change'])
@@ -113,6 +111,5 @@ if __name__=='__main__':
             foreward=True
     mainindex=tblist(begin,end,ranking=ranking,rantings=rantings,\
         change=change,foreward=foreward)
-    print(opts)
     mainindex.getlist()
     mainindex.show()
