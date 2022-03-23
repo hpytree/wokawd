@@ -6,7 +6,7 @@ if os.name == 'nt':
     hspath=r'C:\Windows\System32\drivers\etc\hosts'
 elif os.name == 'posix':
     hspath=r'etc/hosts'
-hspath='..'+os.sep+'test'+os.sep+'hosts'
+#hspath='..'+os.sep+'test'+os.sep+'hosts'
 
 def getcomm(sent:str):
     vgetted=dgetted=igetted=False
