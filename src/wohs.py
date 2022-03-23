@@ -1,72 +1,130 @@
-from http.client import HTTP_VERSION_NOT_SUPPORTED
 import os
 import getopt
 import sys
-from tracemalloc import DomainFilter
 
 if os.name == 'nt':
     hspath=r'C:\Windows\System32\drivers\etc\hosts'
 elif os.name == 'posix':
     hspath=r'etc/hosts'
-hspath='hosts'
+hspath='..'+os.sep+'test'+os.sep+'hosts'
 
-def hostseditor(domain,*,mode='edit',ip=''):
-    global hspath
-    hosts=open(hspath,'r')
-    hostsfile=hosts.readlines()
-    hosts.close()
-    hostsdict={}
-    ip_=''
-    domain_=''
-    ip_getted=False
-    for line in hostsfile:
-        for i in range(0,len(line)):
-            if line[i].isspace():
-                if not (ip_ == ''):
-                    ip_getted=True
-                continue
-            elif line[i] == '#':
+def getcomm(sent:str):
+    vgetted=dgetted=igetted=False
+    verb=domain=ip=''
+    for i in range(len(sent)):
+        if sent[i].isspace():
+            if verb:
+                vgetted=True
+                if domain:
+                    dgetted=True
+                    if igetted:
+                        igetted=True
+            if verb and domain and ip:
                 break
-            if not ip_getted:
-                ip_+=line[i]
-            else:
-                domain_+=line[i]
-        if ip_ == '' and domain_ == '':
+            continue
+        if not vgetted:
+            verb+=sent[i]
+        elif not dgetted:
+            domain+=sent[i]
+        elif not igetted:
+            ip+=sent[i]
+    print(dgetted)
+    return verb,domain,ip
+
+class hosts:
+    def __init__(self,hspath):
+        o_hosts=open(hspath)
+        self.hostsfile=o_hosts.readlines()
+        o_hosts.close()
+        self.hostsdict={}
+        ip_getted=False
+        domain_=ip_=''
+        for line in self.hostsfile:
+            for i in range(len(line)):
+                if line[i].isspace():
+                    if not (ip_ == ''):
+                        ip_getted=True
+                    continue
+                elif line[i] == '#':
+                    break
+                if not ip_getted:
+                    ip_+=line[i]
+                else:
+                    domain_+=line[i]
+            if ip_ == '' and domain_ == '':
+                ip_=domain_=''
+                ip_getted=False
+                continue
+            self.hostsdict[domain_]=(ip_,self.hostsfile.index(line))
             ip_=domain_=''
             ip_getted=False
-            continue
-        hostsdict[domain_]=(ip_,hostsfile.index(line))
-        ip_=domain_=''
-        ip_getted=False
-    if mode=='edit':
-        if not domain in hostsdict:
+
+    def set(self,domain,ip):
+        if not domain in self.hostsdict:
             return
-        hostsfile[hostsdict[domain][1]]=ip+' '+domain
-    elif mode=='remove':
-        if not domain in hostsdict:
+        self.hostsfile[self.hostsdict[domain][1]]=ip+' '+domain+'\n'
+
+    def remove(self,domain):
+        if not domain in self.hostsdict:
             return
-        del hostsfile[hostsdict[domain][1]]
-    elif mode=='new':
-        if domain=='' and ip=='':
+        del self.hostsfile[self.hostsdict[domain][1]]
+
+    def new(self,domain,ip):
+        if domain=='' or ip=='':
             return
-        if not hostsfile[-1][-1] =='\n':
+        if not self.hostsfile[-1][-1] =='\n':
             ip='\n'+ip
-        hostsfile.append(ip+' '+domain)
-    elif mode=='get':
-        if not domain in hostsdict:
+        self.hostsfile.append(ip+' '+domain+'\n')
+
+    def get(self,domain):
+        if not domain in self.hostsdict:
             return
-        return hostsdict[domain]
-    hostsfile_=''.join(hostsfile)
-    with open(hspath,'w') as hosts:
-        hosts.write(hostsfile_)
+        return self.hostsdict[domain][0]
+
+    def change(self,domain,*,mode='set',ip=''):
+        if mode=='set':
+            self.set(domain,ip)
+        elif mode=='remove':
+            self.remove(domain)
+        elif mode=='new':
+            self.new(domain,ip)
+        elif mode=='get':
+            return self.get(domain)
+
+    def save(self):
+        hostsfile_=''.join(self.hostsfile)
+        with open(hspath,'w') as hosts:
+            hosts.write(hostsfile_)
 
 if __name__=='__main__':
-    opts,args=getopt.getopt(sys.argv[1:],shortopts='p:ihv',longopts=['ip=','path=','help','version'])
-    verb=sys.argv[1]
-    domain=sys.argv[2]
-    if domain=='':
-        sys.exit()
-    for opt_name,opt_value in opts:
-        pass
-    hostseditor(domain,mode=verb,ip='1.1.2')
-    
+    opts,args=getopt.getopt(sys.argv[3:],shortopts='?p:i:hv',\
+        longopts=['ip=','path=','help','version','shell'])
+    shellmode=False
+    ip=''
+    for name,value in opts:
+        if name in ('-h','--h','-?'):
+            pass
+        elif name in ('-v','--version'):
+            pass
+        elif name in ('-p','--path'):
+            hspath=value
+        elif name in ('-i','--ip'):
+            ip=value
+        elif name=='--shell':
+            shellmode=True
+    if len(sys.argv)>1:
+        domain=sys.argv[2]
+        verb=sys.argv[1]
+    else:
+        domain=verb=''
+    hostsmain=hosts(hspath)
+    if verb:
+        hostsmain.change(domain,mode=verb,ip=ip)
+    while shellmode:
+        verb,domain,ip=getcomm(input('> '))
+        if verb in ('q','quit','exit'):
+            break
+        backvalue=hostsmain.change(domain,mode=verb,ip=ip)
+        if verb == 'get':
+            print(backvalue)
+    hostsmain.save()

@@ -84,8 +84,7 @@ article/table[2]/tbody/tr')
 
 if __name__=='__main__':
     opts,args=getopt.getopt(sys.argv[1:],\
-        shortopts='-h-v-b:-e:-u-r-c-f',\
-        longopts=['help','version','begin=','end=','unranking',\
+        shortopts='hvb:e:urcf',longopts=['help','version','begin=','end=','unranking',\
         'rantings','change'])
     begin,end=1,50
     ranking=True
