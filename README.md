@@ -12,7 +12,7 @@
 旧版的wormv.cpp，现在已被废弃（太慢了）
 #### wotb.py
 爬取tiobe语言排行榜（最没用的的一个功能）
-#### woclr.pyw
+#### wocr.pyw
 sRGB颜色混合器
 ## 平台兼容问题
 windows下没有dirent.h,可以通过[这个项目](https://github.com/tronkko/dirent)解决
