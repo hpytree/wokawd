@@ -3,7 +3,6 @@ from PySide6.QtWidgets import QSlider,QLabel,QApplication,\
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor,QPainter,QPaintEvent
 import sys
-from copy import deepcopy as dcp
 
 class colorsq(QWidget):
     def __init__(self,parent):
@@ -26,6 +25,13 @@ class colorsq(QWidget):
             self.gvalue=rgbv
         elif mode=='B':
             self.bvalue=rgbv
+    def getrgbv(self,mode):
+        if mode=='R':
+            return self.rvalue
+        elif mode=='G':
+            return self.gvalue
+        elif mode=='B':
+            return self.bvalue
 
 def main():
     app=QApplication(sys.argv)
@@ -37,22 +43,38 @@ def main():
     rgbline=[]
     rgblabel=[]
     rgbbox=[]
-    rgbfun=[]
     hbox=QHBoxLayout()
+    rgbsliderbox=QHBoxLayout()
+    #槽函数定义
+    rgbfun=[]
     def changev(v,x):
         rgbline[x].setText(str(v))
         rgbslider[x].setValue(int(v))
         clrsq.changev(int(v),rgb[x])
+        hextext='#'
+        for i in range(3):
+            hexv=str(hex(clrsq.getrgbv(rgb[i])))[2:]
+            if len(hexv)==1:
+                hexv='0'+hexv
+            hextext+=hexv
+        clrhex.setText(hextext)
         clrsq.repaint()
     rgbfun.append(lambda v:changev(v,0))
     rgbfun.append(lambda v:changev(v,1))
     rgbfun.append(lambda v:changev(v,2))
+    def clrhexpro(clrv:str):
+        v=''.join(clrv.split())
+        if (not len(v) == 7) or (not v[0] == '#'):
+            return
+        for i in range(3):
+            rgbfun[i](int(v[i*2+1:i*2+3],16))
     for i in range(3):
         rgbslider.append(QSlider(Qt.Orientation.Vertical,mwindow))
         rgbline.append(QLineEdit('0',mwindow))
         rgbslider[i].setMinimum(0)
         rgbslider[i].setMaximum(255)
         rgbslider[i].setSingleStep(1)
+        #信号与槽连接
         rgbslider[i].valueChanged.connect(rgbfun[i])
         rgbline[i].textChanged.connect(rgbfun[i])
         rgblabel.append(QLabel(rgb[i],mwindow))
@@ -60,7 +82,13 @@ def main():
         rgbbox[i].addWidget(rgblabel[i])
         rgbbox[i].addWidget(rgbslider[i])
         rgbbox[i].addWidget(rgbline[i])
-        hbox.addLayout(rgbbox[i])
+        rgbsliderbox.addLayout(rgbbox[i])
+    vclrbox=QVBoxLayout()
+    vclrbox.addLayout(rgbsliderbox)
+    clrhex=QLineEdit('#000000',mwindow)
+    clrhex.textChanged.connect(clrhexpro)
+    vclrbox.addWidget(clrhex)
+    hbox.addLayout(vclrbox)
     hbox.addWidget(clrsq)
     mwindow.setLayout(hbox)
     mwindow.show()
