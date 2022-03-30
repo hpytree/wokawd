@@ -8,7 +8,7 @@ def main():
     w=h=400
     mode='RGB'
     clr=[255,255,255]
-    savepath='test/240.png'
+    savepath='../test/240.png'
     t=''
     for name,value in opts:
         if name == '--width':
