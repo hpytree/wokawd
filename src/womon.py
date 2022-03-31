@@ -2,7 +2,16 @@ from PIL import Image
 import sys
 import getopt
 
-def main():
+def main(mode,w,h,clr,t,savepath):
+    im=Image.new(mode,(w,h),tuple(clr))
+    if t == '':
+        period=savepath.rfind('.')
+        if period==0:
+            return 1
+        t=savepath[period+1:]
+    im.save(savepath,t)
+
+if __name__=='__main__':
     opts,args=getopt.getopt(sys.argv[1:],'m:p:t:',\
         ['width=','height=','mode=','value=','path=','type='])
     w=h=400
@@ -23,13 +32,4 @@ def main():
             savepath=value
         elif name in ('-t','--type'):
             t=value
-    im=Image.new(mode,(w,h),tuple(clr))
-    if t == '':
-        period=savepath.rfind('.')
-        if period==0:
-            return 1
-        t=savepath[period+1:]
-    im.save(savepath,t)
-
-if __name__=='__main__':
-    main()
+    main(mode,w,h,clr,t,savepath)
