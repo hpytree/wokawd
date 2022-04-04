@@ -1,3 +1,4 @@
+#!usr/bin/python3
 from PySide6.QtWidgets import QSlider,QLabel,QApplication,\
     QLineEdit,QHBoxLayout,QVBoxLayout,QWidget
 from PySide6.QtCore import Qt

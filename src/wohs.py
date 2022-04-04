@@ -1,3 +1,4 @@
+#!usr/bin/python3
 import os
 import getopt
 import sys
@@ -6,7 +7,7 @@ if os.name == 'nt':
     hspath=r'C:\Windows\System32\drivers\etc\hosts'
 elif os.name == 'posix':
     hspath=r'etc/hosts'
-#hspath='..'+os.sep+'test'+os.sep+'hosts'
+#hspath='../test/hosts'
 
 def getcomm(sent:str):
     vgetted=dgetted=igetted=False
@@ -33,7 +34,7 @@ def getcomm(sent:str):
 
 class hosts:
     def __init__(self,hspath):
-        o_hosts=open(hspath)
+        o_hosts=open(hspath,encoding='UTF8')
         self.hostsfile=o_hosts.readlines()
         o_hosts.close()
         self.hostsdict={}

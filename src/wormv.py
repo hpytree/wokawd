@@ -1,3 +1,4 @@
+#!usr/bin/python3
 import os
 from multiprocessing import Process,Manager,Lock,Value
 import sys
