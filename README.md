@@ -21,4 +21,18 @@ sRGB颜色混合器
 ## 平台兼容问题
 windows下没有dirent.h,可以通过[这个项目](https://github.com/tronkko/dirent)解决
 ## 安装
-使用任何方式安装
+### Windows:
+```
+git clone https://github.com/hpytrail/wokawd
+cd wokawd
+.\install-windows.ps1
+```
+### Linux:
+```
+git clone https://github.com/hpytrail/wokawd
+cd wokawd
+./install-linux.sh
+```
+安装后所有文件到安装到了build文件夹下，可以复制这些文件到任何文件夹（也可以包含到path路径)。
+## 卸载
+只要删除build下的文件和path路径就行（如果有的话）。
